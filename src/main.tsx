@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-import App from './App';       
-import './index.css';         
+import App from './App';      
+import './index.css';          
 // Feature Flag to conditionally enable mocking in development environments
 async function prepareWorker() {
   if (process.env.NODE_ENV === 'development') {
