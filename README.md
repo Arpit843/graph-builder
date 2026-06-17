@@ -1,1 +1,14 @@
-# graph-builder
+🌐 Infrastructure App Graph BuilderAn interactive, frontend-orchestrated configuration canvas designed to map, visualize, and monitor distributed microservice clusters and network dependencies in real time.🏗️ Architectural Overview & Data FlowThis application is engineered with a strict unidirectional data flow pattern, separating network simulation, state persistence, layout scaffolding, and canvas calculation:[Browser Viewport (Fetch Request)]
+                │
+                ▼
+  [Mock Service Worker Proxy Thread] ───► (Intercepts request, returns mock data)
+                │
+                ▼
+    [Custom Hydration Hook] ───► (Extracts JSON array response payload)
+                │
+                ▼
+       [Zustand State Store] ───► (Validates schemas and caches immutable tree)
+                │
+                ▼
+       [Render Pipeline] ───► Canvas draws vectors (SVG) & Nodes mount (translate3d)
+Network Proxy Interception Layer: On core application boot, the framework initiates a standard browser fetch('/api/graph-data'). Rather than hitting a remote staging cloud, Mock Service Worker (MSW) captures the outbound network loop at the browser background service-worker thread layer, injecting an in-memory database simulation array.State Hydration Abstraction Layer: The custom lifecycle hook (useAppData.ts) captures the raw network stream asynchronously, validates HTTP response metadata properties, and updates the application's central reactive core.Global State Matrix Layer: A selector-driven Zustand store processes the graph data into flat, normalized collections (nodes and edges). It serves as the application's single source of reactive truth, broadcasting coordinate changes to subscribed observers.Hardware-Accelerated Render Engine: The visual layer translates spatial coordinates ($x, y$) directly into CSS transforms mapped to the browser's GPU layer, while an SVG vector layout handles calculation matrices to paint dependency connector lines.🛠️ Tech Stack & Technical RationalesVite Engine: Selected over traditional Webpack architectures to achieve near-instantaneous Hot Module Replacement (HMR) times during development by using native browser ES modules and pre-bundling dependencies with esbuild.TypeScript (Strict Contract Typing): Enforces data contracts for vertices (nodes) and paths (edges) at compile time. This prevents data corruption during complex graph layout mutations or rapid coordinate updates.Zustand Store Engine: Chosen instead of native React Context to eliminate the widespread context "re-render propagation bug." Zustand utilizes a pub-sub model with selector metrics, ensuring only the exact node or panel being updated is forced to repaint.Tailwind CSS Graphic Tokens: Provides predictable utility layers to compute status canvas indicators and dynamic reactive styling options, maintaining zero performance drag.Mock Service Worker (MSW): Decouples front-end engineering from real backend pipelines. By mocking real REST network behavior at the service worker thread level, the exact same code can be shipped to production by simply disabling the environment worker flag.
